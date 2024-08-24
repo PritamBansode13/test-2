@@ -4,18 +4,18 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 314806948291.dkr.ecr.us-east-2.amazonaws.com
+      - aws ecr get-login-password --region $AWS_ECR_REGION | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_ID.dkr.ecr.$AWS_ECR_REGION.amazonaws.com
 
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t test-ecr .
-      - docker tag test-ecr:latest 314806948291.dkr.ecr.us-east-2.amazonaws.com/test-ecr:latest
+      - docker build -t $AWS_ECR_REPOSITORY .
+      - docker tag $AWS_ECR_REPOSITORY:latest $AWS_ECR_ACCOUNT_ID.dkr.ecr.$AWS_ECR_REGION.amazonaws.com/$AWS_ECR_REPOSITORY:latest
 
   post_build:
     commands:
       - echo Pushing the Docker image to Amazon ECR...
-      - docker push 314806948291.dkr.ecr.us-east-2.amazonaws.com/test-ecr:latest
+      - docker push $AWS_ECR_ACCOUNT_ID.dkr.ecr.$AWS_ECR_REGION.amazonaws.com/$AWS_ECR_REPOSITORY:latest
 
 artifacts:
   files:
