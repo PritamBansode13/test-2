@@ -45,3 +45,9 @@ phases:
 
       - echo Granting API Gateway permission to invoke Lambda...
       - aws lambda add-permission --function-name randmalay --principal apigateway.amazonaws.com --statement-id apigateway-prod --action lambda:InvokeFunction --source-arn arn:aws:apigateway:$AWS_REGION::/restapis/$API_ID/*/GET/hello --region $AWS_REGION
+
+  deploy:
+    commands:
+      - echo Deploying the Lambda function and API Gateway setup...
+      - aws lambda publish-version --function-name randmalay --region $AWS_REGION
+      - aws apigateway update-stage --rest-api-id $API_ID --stage-name prod --patch-operations op=replace,path=/*/*/GET,description="Lambda function randmalay deployment" --region $AWS_REGION
